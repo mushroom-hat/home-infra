@@ -1,10 +1,5 @@
 env="dev"
 node="proxymoxy"
-applications=[
-  "pihole",
-  "npm",
-  ]
-
 applications_config = {
   pihole = {
       ostemplate = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"

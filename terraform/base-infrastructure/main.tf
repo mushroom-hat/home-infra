@@ -17,6 +17,6 @@ provider "proxmox" {
 }
 
 locals {
-  app_count = length(var.applications) # how many LXC containers you want to spin up
+  app_count = length(var.applications_config) # how many LXC containers you want to spin up
   ssh_pub_key = file("~/.ssh/id_rsa.pub") # SSH public key for LXC root user
 }

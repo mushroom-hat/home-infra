@@ -9,11 +9,6 @@ variable "node" {
   type        = string
 }
 
-variable "applications" {
-  description = "Applications"
-  type        = set(string)
-}
-
 variable "applications_config" {
   description = "Applications Configuration"
   type        = map(object({
