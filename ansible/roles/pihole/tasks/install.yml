@@ -16,10 +16,10 @@
   ansible.builtin.shell: |
     curl -sSL https://install.pi-hole.net > ~/install_pihole.sh
     chmod +x ~/install_pihole.sh
-    PIHOLE_SKIP_OS_CHECK=true ~/install_pihole.sh --unattended
-  args:
-    warn: false
+    ~/install_pihole.sh --unattended
   register: pihole_installation
+  environment:
+    PIHOLE_SKIP_OS_CHECK: "true"
 
 - name: Output Pi-hole admin password
   ansible.builtin.debug:

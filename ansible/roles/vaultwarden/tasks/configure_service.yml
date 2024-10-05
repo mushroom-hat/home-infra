@@ -8,16 +8,16 @@
     create_home: no
     state: present
 
-- name: Check if Vaultwarden binary exists
-  stat:
-    path: /usr/bin/vaultwarden
-  register: vaultwarden_binary
-
 - name: Move Vaultwarden binary to /usr/bin
-  command: cp ./vaultwarden/target/release/vaultwarden /usr/bin/
-  args:
-    removes: /usr/bin/vaultwarden
-  when: not vaultwarden_binary.stat.exists
+  copy:
+    src: ./vaultwarden/target/release/vaultwarden
+    dest: /usr/bin/vaultwarden
+    remote_src: yes
+
+- name: Set executable permissions on Vaultwarden binary
+  file:
+    path: /usr/bin/vaultwarden
+    mode: '0755'
 
 - name: Create Vaultwarden service directory
   file:
@@ -34,6 +34,17 @@
     group: vaultwarden
     mode: '0755'
     remote_src: true
+
+- name: Ensure /data directory exists
+  file:
+    path: /var/lib/vaultwarden/data
+    state: directory
+    mode: '0755'
+    owner: vaultwarden
+    group: vaultwarden
+
+- name: Ensure all files in /data belong to vaultwarden
+  command: chown -R vaultwarden:vaultwarden /var/lib/vaultwarden/data
 
 - name: Check if the Vaultwarden environment file exists
   stat:

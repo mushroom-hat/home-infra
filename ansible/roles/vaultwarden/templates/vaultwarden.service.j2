@@ -6,7 +6,7 @@ After=network.target
 [Service]
 User=vaultwarden
 Group=vaultwarden
-# edit ROCKET_ADDRESS and restart service
+# edit ROCKET_ADDRESS=0.0.0.0 and restart service
 EnvironmentFile=/etc/vaultwarden.env 
 ExecStart=/usr/bin/vaultwarden
 WorkingDirectory=/var/lib/vaultwarden

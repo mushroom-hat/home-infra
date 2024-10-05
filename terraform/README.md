@@ -1,8 +1,7 @@
 # Terraform
 
 ## Secrets
-Create a ```creds.tfvars``` file in this directory and store these key-value pairs
-
+Create a ```creds.tfvars``` file in this directory and store these variables (see `example.creds.tfvars` for example). These creds are used universally across all the Terraform projects in this directory
 | VARIABLE_NAME     | REQUIRED | COMMENTS                                   | HOW TO OBTAIN |
 |-------------------|----------|--------------------------------------------|---------------|
 | `PM_ENDPOINT`     | Yes      | The API endpoint for the Proxmox  | Your Proxmox endpoint e.g., http://192.168.1.1:8123/api2/json

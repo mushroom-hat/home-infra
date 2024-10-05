@@ -5,18 +5,18 @@ applications_config = {
       ostemplate = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"
       cores   = 1
       memory  = 512
-      ip      = "192.168.1.81/24"
+      ip      = "192.168.1.12/24"
       storage = "2G"
-      onboot  = false
+      onboot  = true
       gateway    = "192.168.1.254"
   }
   vaultwarden = {
       ostemplate = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"
       cores   = 1
       memory  = 512
-      ip      = "192.168.1.82/24"
-      storage = "8G"
-      onboot  = false
+      ip      = "192.168.1.13/24"
+      storage = "6G"
+      onboot  = true
       gateway    = "192.168.1.254"
   }
   

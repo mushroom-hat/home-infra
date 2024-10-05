@@ -1,5 +1,5 @@
 [pihole]
-192.168.1.81 ansible_user=ansibleadmin ansible_ssh_private_key_file=/home/ansibleadmin/.ssh/id_rsa
+192.168.1.12 ansible_user=ansibleadmin ansible_ssh_private_key_file=/home/ansibleadmin/.ssh/id_rsa
 
 [vaultwarden]
-192.168.1.82 ansible_user=ansibleadmin ansible_ssh_private_key_file=/home/ansibleadmin/.ssh/id_rsa
+192.168.1.13 ansible_user=ansibleadmin ansible_ssh_private_key_file=/home/ansibleadmin/.ssh/id_rsa
