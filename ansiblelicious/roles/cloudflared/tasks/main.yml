@@ -1,0 +1,8 @@
+--- 
+- name: Install Cloudflared
+  import_tasks: install.yml
+  tags: install
+
+- name: Configure Cloudflared service
+  import_tasks: configure_service.yml
+  tags: install

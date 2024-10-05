@@ -1,0 +1,25 @@
+[Unit]
+Description=Bitwarden Server (Powered by Vaultwarden)
+Documentation=https://github.com/dani-garcia/vaultwarden
+After=network.target
+
+[Service]
+User=vaultwarden
+Group=vaultwarden
+# edit ROCKET_ADDRESS and restart service
+EnvironmentFile=/etc/vaultwarden.env 
+ExecStart=/usr/bin/vaultwarden
+WorkingDirectory=/var/lib/vaultwarden
+ReadWriteDirectories=/var/lib/vaultwarden
+Restart=always
+
+# Set reasonable connection and process limits
+LimitNOFILE=1048576
+LimitNPROC=64
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

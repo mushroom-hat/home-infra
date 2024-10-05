@@ -1,0 +1,8 @@
+---
+- name: Install Pi-hole
+  import_tasks: install.yml
+  tags: install
+
+- name: Update DNS Records in Pi-hole
+  import_tasks: add_dns_records.yml
+  tags: update_dns_records

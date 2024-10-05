@@ -1,0 +1,14 @@
+pihole_setupVars:
+  pi_hole_interface: eth0
+  pi_hole_dns_1: 127.0.0.1#5053 #doh
+  pi_hole_dns_2: ""
+  query_logging: true
+  install_web_server: true
+  install_web_interface: true
+  lighttpd_enabled: true
+  cache_size: 10000
+  dns_fqdn_required: true
+  dns_bogus_priv: true
+  dnsmasq_listening: local
+  web_password: "4879b8165ca3f118b7479cc27a11c0c4a33f834fc841f2ec5f4f120663e3ddff"
+  blocking_enabled: true

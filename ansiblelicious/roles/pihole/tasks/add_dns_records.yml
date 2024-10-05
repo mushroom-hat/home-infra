@@ -1,0 +1,26 @@
+---
+- name: Set up DNS records in Pi-hole
+  command: pihole -g
+  register: pihole_update
+  until: pihole_update.rc == 0
+  retries: 5
+  delay: 10
+  
+- name: Ensure custom CNAME records file exists
+  file:
+    path: /etc/dnsmasq.d/05-pihole-custom-cname.conf
+    state: touch  # Create the file if it doesn't exist
+
+# Add A records
+- name: Configure A records for DNS
+  template:
+    src: custom_list.j2
+    dest: /etc/pihole/custom.list
+  notify: Restart Pi-hole
+
+# Add CNAME records
+- name: Configure CNAME records for DNS
+  template:
+    src: dnsmasq_custom.conf.j2
+    dest: /etc/dnsmasq.d/05-pihole-custom-cname.conf
+  notify: Restart Pi-hole

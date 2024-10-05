@@ -1,0 +1,8 @@
+---
+- name: Install Vaultwarden
+  import_tasks: install.yml
+  tags: install
+
+- name: Configure Vaultwarden service
+  import_tasks: configure_service.yml
+  tags: install

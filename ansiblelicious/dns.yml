@@ -1,0 +1,16 @@
+- name: Update DNS Records in Pi-hole
+  hosts: pihole
+  become: true
+  vars:
+    # A records: Map domain names to IP addresses
+    a_records:
+      "nginx.zhiwen.dev": "192.168.1.11"
+
+    # CNAME records: Map alias to target domain
+    cname_records:
+      "pihole.zhiwen.dev": "nginx.zhiwen.dev"
+      "vaultwarden.zhiwen.dev": "nginx.zhiwen.dev"
+      "proxymoxy.zhiwen.dev": "nginx.zhiwen.dev"
+
+  roles:
+    - pihole

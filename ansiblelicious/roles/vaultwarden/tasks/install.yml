@@ -1,0 +1,69 @@
+---
+# Install prerequisites and set up Vaultwarden
+- name: Update software repositories
+  apt:
+    update_cache: yes
+
+- name: Upgrade installed packages
+  apt:
+    upgrade: dist
+    cache_valid_time: 86400
+
+- name: Install prerequisites
+  apt:
+    name:
+      - git
+      - curl
+      - build-essential
+      - pkg-config
+      - libssl-dev
+      - openssl
+      - libssl3
+      - libmariadb-dev-compat
+      - libmariadb-dev
+    state: present
+
+- name: Install Node.js
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt install -y nodejs
+  args:
+    warn: false
+
+- name: Install Rust
+  shell: |
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable --profile minimal
+  args:
+    warn: false
+
+- name: Clone Vaultwarden repository
+  git:
+    repo: https://github.com/dani-garcia/vaultwarden.git
+    dest: ./vaultwarden
+    version: main
+
+- name: Check if Vaultwarden binary exists
+  stat:
+    path: ./vaultwarden/target/release/vaultwarden
+  register: vaultwarden_binary
+  
+- name: Build Vaultwarden with MySQL support
+  shell: ~/.cargo/bin/cargo build --features mysql,sqlite --release
+  args:
+    chdir: ./vaultwarden
+  when: not vaultwarden_binary.stat.exists
+
+- name: Download latest web-vault component
+  get_url:
+    url: https://github.com/dani-garcia/bw_web_builds/releases/download/v2024.6.2c/bw_web_v2024.6.2c.tar.gz
+    dest: ./vaultwarden/target/release/latest.tar.gz
+
+- name: Extract tar.gz file
+  shell: tar -zxf latest.tar.gz
+  args:
+    chdir: ./vaultwarden/target/release
+
+- name: Create data directory in Vaultwarden
+  file:
+    path: ./vaultwarden/target/release/data
+    state: directory

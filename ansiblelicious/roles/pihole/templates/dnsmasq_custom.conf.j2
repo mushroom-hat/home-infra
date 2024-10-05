@@ -1,0 +1,4 @@
+# CNAME Records
+{% for alias, target in cname_records.items() %}
+cname={{ alias }},{{ target }}
+{% endfor %}

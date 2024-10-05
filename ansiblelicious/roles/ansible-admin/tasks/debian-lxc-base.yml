@@ -1,0 +1,75 @@
+- name: Set up Debian LXC containers with required packages and create Ansible Admin
+  hosts: all
+  vars:
+    ansible_user: root
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    ssh_key_path: "/home/ansibleadmin/.ssh/id_rsa.pub"
+  become: true
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: dist  # Use 'dist' for a full upgrade (including removing obsolete packages)
+        update_cache: yes
+        cache_valid_time: 86400 # One day
+
+    - name: Install necessary binaries
+      apt:
+        name:
+          - curl
+          - jq
+          - vim
+          - openssl
+          - libssl3
+          - libssl-dev
+          - unzip
+          - sudo
+        state: present
+
+    - name: Ensure binaries are installed
+      command: >
+        bash -c "curl --version && jq --version && vim --version"
+      register: version_check
+      changed_when: false
+
+    - name: Display installed versions
+      debug:
+        msg: "Installed versions: {{ version_check.stdout }}"
+
+    # create Ansible Admin
+    - name: Ensure ansibleadmin user exists
+      user:
+        name: ansibleadmin
+        shell: /bin/bash
+        create_home: yes
+        state: present
+
+    - name: Add ansibleadmin to sudo group
+      user:
+        name: ansibleadmin
+        groups: sudo
+        append: yes  # Ensure this does not remove existing groups
+
+    - name: Add ansibleadmin to sudoers with NOPASSWD
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^ansibleadmin'
+        line: 'ansibleadmin ALL=(ALL) NOPASSWD:ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Create .ssh directory for ansibleadmin
+      file:
+        path: /home/ansibleadmin/.ssh
+        state: directory
+        owner: ansibleadmin
+        group: ansibleadmin
+        mode: '0700'
+
+    - name: Copy SSH public key to ansibleadmin
+      copy:
+        src: "{{ ssh_key_path }}"
+        dest: /home/ansibleadmin/.ssh/authorized_keys
+        owner: ansibleadmin
+        group: ansibleadmin
+        mode: '0600'
+

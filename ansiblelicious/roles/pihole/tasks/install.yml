@@ -1,0 +1,36 @@
+---
+- name: Create /etc/pihole directory
+  ansible.builtin.file:
+    path: /etc/pihole
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy Pi-hole setupVars.conf
+  ansible.builtin.template:
+    src: setupVars.conf.j2
+    dest: /etc/pihole/setupVars.conf
+
+- name: Download and run Pi-hole Script
+  ansible.builtin.shell: |
+    curl -sSL https://install.pi-hole.net > ~/install_pihole.sh
+    chmod +x ~/install_pihole.sh
+    PIHOLE_SKIP_OS_CHECK=true ~/install_pihole.sh --unattended
+  args:
+    warn: false
+  register: pihole_installation
+
+- name: Output Pi-hole admin password
+  ansible.builtin.debug:
+    msg: "Pi-hole admin password: {{ pihole_installation.stdout }}"
+
+- name: Validate Pi-hole is working
+  ansible.builtin.command: pihole status
+  register: pihole_status
+
+- name: Ensure Pi-hole is running
+  ansible.builtin.assert:
+    that:
+      - pihole_status.stdout is search("listening on port 53")
+    fail_msg: "Pi-hole is not running"

@@ -1,0 +1,12 @@
+- name: Set up Pi-hole
+  hosts: pihole
+  become: true
+  roles:
+    - pihole
+    - cloudflared
+
+- name: Set up Vaultwarden
+  hosts: vaultwarden
+  become: true
+  roles:
+    - vaultwarden

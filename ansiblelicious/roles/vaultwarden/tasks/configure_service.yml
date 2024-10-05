@@ -1,0 +1,74 @@
+---
+# Configure Vaultwarden service
+- name: Create Vaultwarden service user
+  user:
+    name: vaultwarden
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+    state: present
+
+- name: Check if Vaultwarden binary exists
+  stat:
+    path: /usr/bin/vaultwarden
+  register: vaultwarden_binary
+
+- name: Move Vaultwarden binary to /usr/bin
+  command: cp ./vaultwarden/target/release/vaultwarden /usr/bin/
+  args:
+    removes: /usr/bin/vaultwarden
+  when: not vaultwarden_binary.stat.exists
+
+- name: Create Vaultwarden service directory
+  file:
+    path: /var/lib/vaultwarden
+    state: directory
+    owner: vaultwarden
+    group: vaultwarden
+
+- name: Copy web-vault directory to /var/lib/vaultwarden
+  copy:
+    src: ./vaultwarden/target/release/web-vault
+    dest: /var/lib/vaultwarden
+    owner: vaultwarden
+    group: vaultwarden
+    mode: '0755'
+    remote_src: true
+
+- name: Check if the Vaultwarden environment file exists
+  stat:
+    path: /etc/vaultwarden.env
+  register: vaultwarden_env_file
+
+- name: Copy Vaultwarden environment file to /etc/vaultwarden.env
+  copy:
+    src: ./vaultwarden/.env.template
+    dest: /etc/vaultwarden.env
+    owner: root
+    group: root
+    mode: '0644'
+    remote_src: true  # Indicates that the source file is already on the remote machine
+  when: not vaultwarden_env_file.stat.exists
+
+- name: Create systemd service file for Vaultwarden
+  template:
+    src: vaultwarden.service.j2
+    dest: /etc/systemd/system/vaultwarden.service
+    
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Start and enable Vaultwarden service
+  systemd:
+    name: vaultwarden
+    state: started
+    enabled: true
+
+- name: Check status of Vaultwarden service
+  command: systemctl status vaultwarden
+  register: vaultwarden_status
+
+- name: Display Vaultwarden service status
+  debug:
+    msg: "{{ vaultwarden_status.stdout }}"
