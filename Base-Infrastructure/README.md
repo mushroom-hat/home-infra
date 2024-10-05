@@ -1,0 +1,2 @@
+## About
+This directory stores all terraform configurations for Base Infrastructure. The base instructure provision key resource such as linux containers (LXC) and Virtual Machines (VMs) required for any service hosted locally. 
